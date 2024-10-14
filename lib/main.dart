@@ -34,15 +34,14 @@ class MyCustomForm extends StatefulWidget {
 // Define a corresponding State class.
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
-String email = '';  
-final passwordController = TextEditingController();
-final emailController = TextEditingController();
-final _formKey = GlobalKey<FormState>(); 
-final  _passwordVisible = false;
+  String email = '';
+  final passwordController = TextEditingController();
+  final emailController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  var _passwordVisible = false;
 
   @override
   void initState() {
-
     super.initState();
   }
 
@@ -68,11 +67,10 @@ final  _passwordVisible = false;
               //Acessar o form
               bool valid = _formKey.currentState!.validate();
 
-              if(valid){
+              if (valid) {
                 print('Email: $email');
                 print('Password: ${passwordController.text}');
               }
-
             },
             child: const Text('Submit'),
           )
@@ -82,20 +80,19 @@ final  _passwordVisible = false;
   }
 
   Widget buildEmail() => TextFormField(
-    validator: (value) {
-      if(value == null || value.isEmpty){
-        return 'Obrigatório informar um e-mail';
-      }else{
-        // if(value ){
-
-        // }
-      }
-      return null;
-    },
-      controller: emailController,
-      onChanged: (value) {
-        email = value;
-      },
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Obrigatório informar um e-mail';
+          }
+          if (!value.contains('@')) {
+            return 'O e-mail precisa conter @';
+          }
+          return null;
+        },
+        controller: emailController,
+        onChanged: (value) {
+          email = value;
+        },
         decoration: InputDecoration(
           hintText: 'name@example.com',
           labelText: 'E-mail',
@@ -111,34 +108,32 @@ final  _passwordVisible = false;
         keyboardType: TextInputType.emailAddress,
       );
 
-  Widget buildPassword() =>  TextFormField(
-    validator: (value) {
-      if(value == null || value.isEmpty){
-        return 'Obrigatório informar uma senha';
-      }else{
-        if(value.length < 6){
-          return 'Senha muito curta.';
-        }
-      }
-      return null;
-    },
-    controller: passwordController,
+  Widget buildPassword() => TextFormField(
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Obrigatório informar uma senha';
+          }
+          if (value.length < 6) {
+            return 'Senha muito curta.';
+          }
+          if (!RegExp(r'[0-9]').hasMatch(value)) {
+            return 'A senha precisa conter pelo menos um número.';
+          }
+          return null;
+        },
+        controller: passwordController,
         obscureText: !_passwordVisible,
         decoration: InputDecoration(
           hintText: 'Your Password...',
           labelText: 'Password',
           suffixIcon: IconButton(
             icon: Icon(
-            _passwordVisible 
-            ? Icons.visibility
-            : Icons.visibility_off
-            ),
-            
-          onPressed: () {
-            setState(() {
-              _passwordVisible = !_passwordVisible;
-            });      
-          },
+                _passwordVisible ? Icons.visibility : Icons.visibility_off),
+            onPressed: () {
+              setState(() {
+                _passwordVisible = !_passwordVisible;
+              });
+            },
           ),
           border: OutlineInputBorder(),
         ),
